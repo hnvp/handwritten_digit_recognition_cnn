@@ -109,15 +109,12 @@ def display_errors_cnn(model, X, y):
 model = Sequential(
     [
         tf.keras.Input(shape=(20, 20, 1)),
-        # Block 1: learn basic features (edges, corners)
         Conv2D(32, kernel_size=(3, 3), activation="relu", padding="same"),
         MaxPooling2D(pool_size=(2, 2)),
         Dropout(0.3),
-        # Block 2: learn complex features (curves, strokes)
         Conv2D(64, kernel_size=(3, 3), activation="relu", padding="same"),
         MaxPooling2D(pool_size=(2, 2)),
         Dropout(0.3),
-        # Flatten and classify
         Flatten(),
         Dense(128, activation="relu"),
         Dropout(0.5),
