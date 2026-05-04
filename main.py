@@ -41,14 +41,20 @@ fig_sample.suptitle("Label & Image", fontsize=FONTSIZE_TITLE)
 plt.show()
 
 # split data
+X_temp, X_test, y_temp, y_test = train_test_split(
+    X_cnn, y.reshape(-1), test_size=0.15, random_state=RANDOM_SEED
+)
 X_train, X_val, y_train, y_val = train_test_split(
-    X_cnn, y.reshape(-1), test_size=0.2, random_state=RANDOM_SEED
+    X_temp, y_temp, test_size=0.15 / 0.85, random_state=RANDOM_SEED
 )
 print("X_train shape:", X_train.shape)
 print("X_val shape:  ", X_val.shape)
+print("X_test shape: ", X_test.shape)
 
 m_val = len(X_val)
+m_test = len(X_test)
 y_val_column = y_val.reshape(-1, 1)
+y_test_column = y_test.reshape(-1, 1)
 
 
 # helper functions
@@ -147,22 +153,30 @@ plt.axis("off")
 plt.show()
 
 # evaluate
+print("Validation Set")
 loss, accuracy = model.evaluate(X_val, y_val, verbose=0)
 print(f"Loss:     {loss:.4f}")
 print(f"Accuracy: {accuracy:.4f}")
 num_errors = display_errors_cnn(model, X_val, y_val_column)
 print(f"Errors found: {num_errors}")
 
+print("Test Set")
+test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
+print(f"Loss:     {test_loss:.4f}")
+print(f"Accuracy: {test_accuracy:.4f}")
+num_errors_test = display_errors_cnn(model, X_test, y_test_column)
+print(f"Errors found: {num_errors_test}")
+
 # batch visualization
 fig_batch, axes_batch = plt.subplots(8, 8, figsize=(6, 6))
 fig_batch.tight_layout(pad=0.5, rect=[0, 0.03, 1, 0.91])
-random_indices = np.random.randint(m_val, size=64)
-predictions = model.predict(X_val[random_indices], verbose=0)
+random_indices = np.random.randint(m_test, size=64)
+predictions = model.predict(X_test[random_indices], verbose=0)
 yhats = np.argmax(predictions, axis=1)
 
 for i, ax in enumerate(axes_batch.flat):
-    ax.imshow(X_val[random_indices[i]].reshape(20, 20).T, cmap="gray")
-    ax.set_title(f"{y_val[random_indices[i]]}, {yhats[i]}", fontsize=FONTSIZE_LABEL)
+    ax.imshow(X_test[random_indices[i]].reshape(20, 20).T, cmap="gray")
+    ax.set_title(f"{y_test[random_indices[i]]}, {yhats[i]}", fontsize=FONTSIZE_LABEL)
     ax.set_axis_off()
 
 fig_batch.suptitle("True Label vs Predicted Label", fontsize=FONTSIZE_TITLE)

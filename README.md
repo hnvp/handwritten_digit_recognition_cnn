@@ -4,7 +4,7 @@ A convolutional neural network (CNN) model for recognizing handwritten digits (0
 
 Results:
 
-Validation Accuracy: ~98%
+Validation Accuracy: ~97%
 
 Validation Loss: ~0.08
 
